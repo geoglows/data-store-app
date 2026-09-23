@@ -19,8 +19,7 @@ export const LICENSE = {
     "You may copy and redistribute the data in any medium or format and adapt, transform and build upon it.",
     "You must give appropriate credit to GEOGLOWS and the River Forecast System, provide a link to the license, and indicate if changes were made.",
     "You may not use the data for commercial purposes without a separate agreement.",
-    "If you remix, transform, or build upon the data, you must distribute your contributions under the same license.",
-    "The data are provided as is, without warranty of any kind. Forecasts are model output and are not a substitute for official warnings from national hydrological and meteorological services."
+    "If you remix, transform, or build upon the data, you must distribute your contributions under the same license."
   ]
 };
 
@@ -294,7 +293,7 @@ export const DATASETS = [
     temporalResolution: "3 hours",
     updateFrequency: "Daily, available 06–12 UTC",
     path: "forecasts15/year=YYYY/month=MM/day=DD/fim.geo.parquet",
-    alsoPath: "flood-maps/lon=XXX/lat=YYY/arc/",
+    alsoPath: "flood-maps/lat=YYY/lon=XXX/arc/",
     changelog: FORECAST_CHANGELOG,
     files: [
       ["fim.geo.parquet", "GeoParquet", "Vector flood extent polygons for the whole forecast."],
@@ -316,7 +315,7 @@ export const DATASETS = [
     temporalCoverage: "Static",
     temporalResolution: "None",
     updateFrequency: "With each model version",
-    path: "flood-maps/lon=XXX/lat=YYY/return-periods/",
+    path: "flood-maps/lat=YYY/lon=XXX/return-periods/",
     alsoPath: "flood-maps/tile_boundaries.pmtiles",
     changelog: RETRO_CHANGELOG,
     recurrenceIntervals: [1.5, 2, 5, 10, 25, 50, 100],
@@ -339,7 +338,7 @@ export const DATASETS = [
     temporalCoverage: "Static",
     temporalResolution: "None",
     updateFrequency: "With each model version",
-    path: "flood-maps/lon=XXX/lat=YYY/fldpln.zarr/",
+    path: "flood-maps/lat=YYY/lon=XXX/fldpln.zarr/",
     alsoPath: "flood-maps/tile_boundaries.pmtiles",
     changelog: HYDRO_CHANGELOG,
     files: [
@@ -366,7 +365,6 @@ export const DATASETS = [
   ]),
 
   // ── v1 archive ──────────────────────────────────────────────────────────
-  // TODO: confirm the mirror prefix once the v1 backup is migrated into the bucket.
   ...archive("v1", [
     ["hydrography", "streams", "Regional stream networks", "The HydroSHEDS derived drainage lines for each of the v1 regions.", "hydrography/"],
     ["retrospective", "retrospective-daily", "ERA5 historical simulation", "Daily discharge driven by ERA5 for each region, 1979 onward.", "retrospective/"],
@@ -408,8 +406,8 @@ function archive(version, rows) {
  * build that link from the version and the short name alone, which is why the category is a filter
  * here rather than a path segment.
  *
- * TODO: these names are proposed by this app (see spec/PROPOSED-short-names.md). They belong in the
- * specification documents; once they are there, this list follows that one.
+ * The names are the ones in the "Product short names" table of each version's specification
+ * document; this list follows that one.
  */
 export const shortName = d => d.id;
 

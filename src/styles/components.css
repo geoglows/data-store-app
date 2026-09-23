@@ -19,14 +19,29 @@
     transition: .12s;
 }
 
+/* Icons arrive wrapped in a span; as an inline box it sits on the text baseline, off center. */
+.ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    line-height: 0;
+}
+
+.ico svg {
+    display: block;
+}
+
 .btn svg {
     width: var(--icon);
     height: var(--icon);
 }
 
 .btn.icon {
+    flex: none;
     width: var(--size);
     height: var(--size);
+    aspect-ratio: 1;
     padding: 0;
     color: var(--text-dim);
 }
@@ -103,12 +118,12 @@
 }
 
 /* Copy buttons swap to a check for a moment after copying. */
-.copy svg:last-child, .btn.done svg:first-child {
+.copy .ico:last-child, .btn.done .ico:first-child {
     display: none;
 }
 
-.btn.done svg:last-child {
-    display: block;
+.btn.done .ico:last-child {
+    display: inline-flex;
     color: var(--check);
 }
 
@@ -364,5 +379,8 @@ table.data thead th {
 a svg {
     width: 14px;
     height: 14px;
+}
+
+a .ico {
     vertical-align: -2px;
 }

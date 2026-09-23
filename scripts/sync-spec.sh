@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Copy the specification documents into ./spec verbatim, and record where they came from.
+# Copy the specification documents into ./docs/spec verbatim, and record where they came from.
 #
-# The masters live in https://github.com/river-forecast-system/rfs-specification-documents. ./spec is
-# a working copy, not part of this repository — it is gitignored, and this is what puts it there:
+# The masters live in https://github.com/river-forecast-system/rfs-specification-documents. ./docs/spec
+# is a working copy, not part of this repository — it is gitignored, and this is what puts it there:
 # from a sibling checkout when there is one, otherwise from a shallow clone in ./.spec-src.
 #
 #   ./scripts/sync-spec.sh [path-to-spec-repo]     (default: ../rfs-specification-documents)
 #
-# It never fails the build: with no documents to be had it warns and leaves ./spec as it is, and the
+# It never fails the build: with no documents to be had it warns and leaves ./docs/spec as it is, and the
 # specification pages say they have not been synced.
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -22,23 +22,23 @@ if [ ! -d "$SRC/docs/specs" ]; then
   else
     rm -rf .spec-src
     git clone --depth 1 --quiet "$REMOTE" .spec-src || {
-      echo "could not clone the specification documents; leaving ./spec as it is" >&2
+      echo "could not clone the specification documents; leaving ./docs/spec as it is" >&2
       exit 0
     }
   fi
   SRC=.spec-src
 fi
 
-mkdir -p spec/specs
-cp "$SRC/docs/index.md" spec/index.md
-cp "$SRC/docs/specs/rfs-v1.md" "$SRC/docs/specs/rfs-v2.md" "$SRC/docs/specs/rfs-v3.md" spec/specs/
-cp "$SRC/rfs-v3-spec-document.md" spec/rfs-v3-spec-document.md 2>/dev/null || true
-cp "$SRC/organization.md" spec/organization.md 2>/dev/null || true
+mkdir -p docs/spec/specs
+cp "$SRC/docs/index.md" docs/spec/index.md
+cp "$SRC/docs/specs/rfs-v1.md" "$SRC/docs/specs/rfs-v2.md" "$SRC/docs/specs/rfs-v3.md" docs/spec/specs/
+cp "$SRC/rfs-v3-spec-document.md" docs/spec/rfs-v3-spec-document.md 2>/dev/null || true
+cp "$SRC/organization.md" docs/spec/organization.md 2>/dev/null || true
 
 commit=$(git -C "$SRC" rev-parse HEAD 2>/dev/null || echo unknown)
 subject=$(git -C "$SRC" log -1 --pretty=%s 2>/dev/null || echo unknown)
 authored=$(git -C "$SRC" log -1 --pretty=%cI 2>/dev/null || echo unknown)
-cat > spec/SOURCE.json <<JSON
+cat > docs/spec/SOURCE.json <<JSON
 {
   "repository": "https://github.com/river-forecast-system/rfs-specification-documents",
   "commit": "$commit",
@@ -48,4 +48,4 @@ cat > spec/SOURCE.json <<JSON
 }
 JSON
 
-echo "synced spec/ from $SRC at $commit"
+echo "synced docs/spec/ from $SRC at $commit"

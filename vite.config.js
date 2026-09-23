@@ -87,9 +87,9 @@ const serveData = () => {
  */
 
 /**
- * Make sure ./spec holds the specification documents before anything imports them.
+ * Make sure ./docs/spec holds the specification documents before anything imports them.
  *
- * ./spec is a working copy rather than part of this repository, and the portal builds every app with
+ * ./docs/spec is a working copy rather than part of this repository, and the portal builds every app with
  * a bare `npx vite build`, so an npm pre-script would not run. This does it from inside the build:
  * missing documents are fetched by scripts/sync-spec.sh, which falls back to a shallow clone and
  * never fails — the specification pages say when they have nothing to show.
@@ -98,7 +98,7 @@ const ensureSpec = () => ({
   name: "ensure-spec",
   config() {
     const root = fileURLToPath(new URL(".", import.meta.url));
-    if (existsSync(join(root, "spec", "specs", "rfs-v3.md"))) return;
+    if (existsSync(join(root, "docs", "spec", "specs", "rfs-v3.md"))) return;
     try {
       execFileSync(join(root, "scripts", "sync-spec.sh"), {stdio: "inherit"});
     } catch (err) {

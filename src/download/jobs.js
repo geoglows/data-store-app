@@ -1,5 +1,5 @@
 import {spanCount} from "riverforecastsystem/v3/hydrography";
-import {MAX_BROWSER_MB, V3_BASE, regionFile, storeUrl, toS3} from "../data/sources.js";
+import {MAX_BROWSER_MB, V3_BASE, regionFile, storeReadUrl, storeUrl, toS3} from "../data/sources.js";
 import {regionRuns} from "../data/regions.js";
 import {subsetZarr, summarizeMembers, variableMeta} from "./zarrSubset.js";
 import {zipStore} from "./zip.js";
@@ -182,7 +182,7 @@ async function runHydrography(req, {onProgress, signal}) {
 
 async function runZarr(req, {onProgress, signal}) {
   const d = req.dataset;
-  const url = storeUrl(d, {date: req.form.date});
+  const url = storeReadUrl(d, {date: req.form.date});
   let variables = req.variables;
   let derive = null;
   // Stores published before the ensemble summaries existed get them computed from the members.

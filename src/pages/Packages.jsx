@@ -114,7 +114,7 @@ function JavaScriptBody() {
       <p>One endpoint — the root of the v3 tree — settles where everything is read from. Unset, the package reads the public CDN.</p>
       <CodeBlock code={`import {configure, getConfig, urls} from "riverforecastsystem/v3";
 
-configure({v3Base: "https://cdn.apps.geoglows.org/rfs-v3-sample-data"});
+configure({v3Base: "https://d2bu4ozwm6rcbq.cloudfront.net"});   // the default, shown for the shape of it
 getConfig();                       // {v3Base: "..."}
 urls.retrospectiveZarr({resolution: "daily"});
 urls.forecastZarr({date: "2026-07-10"});
@@ -175,7 +175,7 @@ rp = geoglows.data.return_periods(river_id)`}/>
       <CodeBlock code={`import xarray as xr
 
 ds = xr.open_zarr(
-    "s3://river-forecast-system/v3/retrospective/daily.zarr",
+    "s3://river-forecast-system-v3/retrospective/daily.zarr",
     storage_options={"anon": True},
 )
 q = ds["Q"].isel(riverId=slice(lo, hi + 1))   # a watershed's riverIndex run`}/>

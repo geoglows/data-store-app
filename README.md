@@ -19,13 +19,17 @@ npm run build      # dist/, built with --base=/rfs-data-store/
 npm run smoke      # headless click-through with downloads, needs `npm run dev` running
 ```
 
-By default the app reads the public sample tree at
-`https://cdn.apps.geoglows.org/rfs-v3-sample-data`. To read a local copy of the v3 tree instead,
-symlink it and point the app at it:
+By default the app reads the v3 bucket, `s3://river-forecast-system-v3`, through the CDN that
+`riverforecastsystem` (0.10.0) defaults to. The bucket does not hold the retrospective or forecast
+Zarr stores yet, so `VITE_RFS_V3_ZARR_BASE` in `.env` points the browser's Zarr reads at the sample
+tree, `https://cdn.apps.geoglows.org/rfs-v3-sample-data`, which is cut on the same riverIndex axis.
+Empty it once those stores are published. To read a local copy of the v3 tree instead, symlink it
+and point the app at it:
 
 ```bash
 ln -s /path/to/v3-data ./data
 echo 'VITE_RFS_V3_BASE=data' >> .env.local
+echo 'VITE_RFS_V3_ZARR_BASE=' >> .env.local
 ```
 
 `vite.config.js` serves `./data` by byte range from the dev and preview servers, which is what
@@ -83,14 +87,14 @@ The top bar has three sections: **Datasets**, **Packages** and **Specification**
 
 The masters live in
 [rfs-specification-documents](https://github.com/river-forecast-system/rfs-specification-documents)
-and are **not** part of this repository: `spec/` is a gitignored working copy that the build reads.
+and are **not** part of this repository: `docs/spec/` is a gitignored working copy that the build reads.
 
 ```bash
 ./scripts/sync-spec.sh [path-to-spec-repo]     # default ../rfs-specification-documents
 ```
 
-copies the documents in and records the upstream commit in `spec/SOURCE.json`, which the sidebar of
-every specification page shows. The build does this for itself when `spec/` is missing — the portal
+copies the documents in and records the upstream commit in `docs/spec/SOURCE.json`, which the sidebar of
+every specification page shows. The build does this for itself when `docs/spec/` is missing — the portal
 runs a bare `vite build`, so an npm pre-script would not fire — falling back to a shallow clone into
 `.spec-src/`. Nothing about it can fail a build: with no documents to be had, the specification pages
 say they were not synced and everything else works.
@@ -114,18 +118,24 @@ summary says so and the command line section is how to get them.
 
 ## Still to do
 
-- **Sign in is a dummy.** `src/account/auth.js` has the same shape as `@geoglows/geoglows-auth`'s
-  `bootstrapAuth`, and the comment at the top says what to replace it with. Pressing Sign in signs
-  you in as a demo user; terms acceptance is remembered for the tab.
+- **Downloads need an account and, every time, the terms.** Sign in is `@geoglows/geoglows-auth`,
+  configured by `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. The Download button stays
+  disabled until the signed-in user ticks both boxes — agreeing to the data usage agreement
+  (`docs/data-usage-agreement.md`) and acknowledging receipt of the dataset's license — and they
+  clear once a download starts. Nothing records the agreement. The agreement's definitive text is
+  `docs/data-usage-agreement.md`, beside the synced specification documents in `docs/spec/`. It is
+  a template provided by Harvard Dataverse:
+  [Sample Data Usage Agreement](https://support.dataverse.harvard.edu/sample-data-usage-agreement).
 - **Dates and changelogs are placeholders.** `src/data/sentinel.js` is where each product's
   `sentinel.json` will be read from the bucket; until then the catalog's literals are shown.
-- **`VITE_S3_V3_ROOT` is a guess** (`s3://river-forecast-system/v3`). The v2 paths in the catalog
-  were verified against the live bucket; the v3 bucket does not exist yet.
+- **The v3 bucket is partly published.** `s3://river-forecast-system-v3` holds the hydrography and
+  the flood maps; the retrospective and forecast stores are read from the sample tree until they
+  land (see `VITE_RFS_V3_ZARR_BASE`).
 - **Lakes are not published yet** — the dataset is in the catalog, marked Preview, with the file path
   laid out the way the other region files are.
 - **The JavaScript download example** on each Download tab uses `riverforecastsystem`, the same
   package the app reads through; the flow-duration-curve snippet falls back to zarrita because the
   package has no reader for that store yet.
-- The sample tree has only the hourly and daily retrospective stores, the annual maximums, the
-  hydrography, and one synthetic 16-river forecast, so the other datasets cannot be downloaded
-  against it.
+- The sample tree has only the hourly and daily retrospective stores, the annual maximums and one
+  synthetic 16-river forecast (2026-07-10), so monthly, yearly, return periods and flow duration
+  curves cannot be downloaded until the bucket has them.

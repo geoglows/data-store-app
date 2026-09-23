@@ -40,18 +40,9 @@
     color: var(--text-dim);
 }
 
-.who {
-    --icon: 22px;
-    display: inline-flex;
+.auth-host {
+    display: flex;
     align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    color: var(--text-dim);
-}
-
-.who svg {
-    width: var(--icon);
-    height: var(--icon);
 }
 
 #crumbs {

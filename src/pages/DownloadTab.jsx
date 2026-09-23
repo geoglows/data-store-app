@@ -1,10 +1,11 @@
 import {useEffect, useMemo, useRef, useState} from "preact/hooks";
 import {auth} from "../account/auth.js";
 import {useAuth} from "../account/useAuth.js";
-import {MAX_BROWSER_MB, storeUrl} from "../data/sources.js";
+import {AGREEMENT_PARAGRAPHS} from "../data/agreement.js";
+import {MAX_BROWSER_MB, storeReadUrl} from "../data/sources.js";
 import {loadRegionRuns, regionRuns} from "../data/regions.js";
 import {createAoiMap} from "../map/aoiMap.js";
-import {MODES, createSelection} from "../map/selection.js";
+import {createSelection, MODES} from "../map/selection.js";
 import {buildRequest, cliCommands, jsExample, requestJson, runRequest} from "../download/jobs.js";
 import {readTimeAxis} from "../download/zarrSubset.js";
 import {fmtBytes, fmtInt} from "../dom.js";
@@ -25,11 +26,18 @@ function defaultForecastDate() {
 }
 
 /**
- * The Download page of a dataset: the CDS form, top to bottom — area of interest, what to take from
- * the dataset, format, terms of use, the request and its download button, and the same request as
- * commands and code.
+ * The Download page of a dataset, top to bottom — area of interest, what to take from the dataset,
+ * format, the terms and the license, the request and its download button, and the same request as
+ * commands and code. Downloading needs an account, and every download needs the data usage agreement
+ * agreed to and the license acknowledged again: the boxes clear once a download starts.
  */
 export function DownloadTab({dataset: d}) {
+  const {ready} = useAuth();
+  if (!ready) return <div class="empty">Loading the download form…</div>;
+  return <DownloadForm dataset={d}/>;
+}
+
+function DownloadForm({dataset: d}) {
   const hydro = d.kind === "hydrography";
   const selection = useMemo(() => createSelection({regionRuns}), [d.id]);
   const mapEl = useRef(null);
@@ -50,9 +58,11 @@ export function DownloadTab({dataset: d}) {
     maxSimulated: false
   });
   const [cliTab, setCliTab] = useState("s5cmd");
+  const [agreed, setAgreed] = useState({agreement: false, license: false});
+  const allAgreed = agreed.agreement && agreed.license;
+  const {user} = useAuth();
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
-  const {user, termsAccepted} = useAuth();
 
   const set = patch => setForm(prev => ({...prev, ...patch}));
 
@@ -74,7 +84,7 @@ export function DownloadTab({dataset: d}) {
   useEffect(() => {
     if (d.kind !== "timeseries") return;
     let live = true;
-    readTimeAxis(storeUrl(d)).then(a => {
+    readTimeAxis(storeReadUrl(d)).then(a => {
       if (!live || !a) return;
       setAxis(a);
       const first = isoDay(a.ms[0]);
@@ -94,7 +104,7 @@ export function DownloadTab({dataset: d}) {
     if (d.kind !== "forecast" || !form.date) return;
     let live = true;
     set({available: null});
-    fetch(`${storeUrl(d, {date: form.date})}/zarr.json`, {method: "HEAD"})
+    fetch(`${storeReadUrl(d, {date: form.date})}/zarr.json`, {method: "HEAD"})
       .then(r => live && set({available: r.ok}))
       .catch(() => live && set({available: false}));
     return () => (live = false);
@@ -102,13 +112,14 @@ export function DownloadTab({dataset: d}) {
 
   const req = buildRequest(d, form, sel, axis);
   const bad = new Set(req.problems);
-  const ready = !!user && termsAccepted && req.valid && progress == null;
+  const ready = !!user && allAgreed && req.valid && progress == null;
 
   const submit = async (e) => {
     e.preventDefault();
     if (!ready) return;
     const controller = new AbortController();
     running.current = controller;
+    setAgreed({agreement: false, license: false});
     setError(null);
     setProgress(0);
     try {
@@ -206,24 +217,40 @@ export function DownloadTab({dataset: d}) {
         </label>
       </section>
 
-      <section class={`form-card ${user && termsAccepted ? "" : "needs"}`} id="sec-terms">
+      <section class={`form-card ${user && allAgreed ? "" : "needs"}`} id="sec-terms">
         <h3><span class="num">{num()}</span>Terms of use</h3>
+        <p>Data from this site are not a substitute for official guidance from authorized local or national government entities.</p>
+        <h4>Data usage agreement</h4>
+        <div class="agreement" tabindex="0">{AGREEMENT_PARAGRAPHS.map((t, i) => <p key={i}>{t}</p>)}</div>
         <p><a href={d.license.url} target="_blank" rel="noopener">{d.license.name} <Icon name="external"/></a></p>
         <ul class="terms">{d.license.summary.map(t => <li key={t}>{t}</li>)}</ul>
-        <div class="row" id="terms-action">
-          {!user
-            ? <button type="button" class="btn primary" id="terms-sign-in" onClick={() => auth.signIn()}><Icon name="signIn"/><span>Sign in</span></button>
-            : termsAccepted
-              ? <span class="accepted"><Icon name="shield"/><span>Terms accepted</span></span>
-              : <button type="button" class="btn primary" id="terms-accept" onClick={() => auth.acceptTerms()}><Icon name="check"/><span>Accept terms</span></button>}
-        </div>
+        <label class="checkline">
+          <input type="checkbox" name="agree-usage" checked={agreed.agreement} disabled={!user}
+                 onChange={e => setAgreed({...agreed, agreement: e.currentTarget.checked})}/>
+          <span>I agree to the data usage agreement</span>
+        </label>
+        <label class="checkline">
+          <input type="checkbox" name="ack-license" checked={agreed.license} disabled={!user}
+                 onChange={e => setAgreed({...agreed, license: e.currentTarget.checked})}/>
+          <span>I acknowledge receipt of this dataset's license, {d.license.short}</span>
+        </label>
+        {user ? null : (
+          <div class="row" id="terms-action">
+            <button type="button" class="btn primary" id="terms-sign-in" disabled={!auth.configured} onClick={() => auth.signIn()}>
+              <Icon name="signIn"/><span>Sign in</span>
+            </button>
+          </div>
+        )}
       </section>
 
       <section class="form-card" id="sec-request">
         <h3><span class="num">{num()}</span>Request</h3>
         <table class="facts request">
           <tbody id="request-rows">
-            {rows.map(([k, v, err]) => <tr class={err ? "bad" : ""} key={k}><th>{k}</th><td>{v}</td></tr>)}
+          {rows.map(([k, v, err]) => <tr class={err ? "bad" : ""} key={k}>
+            <th>{k}</th>
+            <td>{v}</td>
+          </tr>)}
           </tbody>
         </table>
         <div class="row submit-row">

@@ -1,3 +1,4 @@
+import "./account/auth.js";  // first: registers the auth listener before anything else runs
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./styles/tokens.css";
 import "./styles/base.css";

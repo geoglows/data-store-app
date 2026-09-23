@@ -5,5 +5,5 @@ dist/
 .DS_Store
 /.env.local
 tests/out/
-/spec/
+/docs/spec/
 /.spec-src/

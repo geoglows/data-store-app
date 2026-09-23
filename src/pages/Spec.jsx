@@ -7,14 +7,14 @@ import {fmtDate, copyText} from "../dom.js";
 import {Icon} from "../components/Icon.jsx";
 import {icon} from "../ui/icons.js";
 
-// The specification documents, verbatim. scripts/sync-spec.sh puts them under ./spec — a working
+// The specification documents, verbatim. scripts/sync-spec.sh puts them under ./docs/spec — a working
 // copy that is not part of this repository — and they are read as text, so what this page shows is
 // byte for byte what the master repository holds. Globbed rather than imported one by one: a build
 // made before the documents were synced is then a page that says so, not a build that fails.
-const FILES = import.meta.glob("../../spec/**/*.md", {query: "?raw", import: "default", eager: true});
-const SOURCES = import.meta.glob("../../spec/SOURCE.json", {import: "default", eager: true});
+const FILES = import.meta.glob("../../docs/spec/**/*.md", {query: "?raw", import: "default", eager: true});
+const SOURCES = import.meta.glob("../../docs/spec/SOURCE.json", {import: "default", eager: true});
 
-const textFor = doc => FILES[Object.keys(FILES).find(k => k.endsWith(`/spec/${doc.vendored}`)) ?? ""] ?? null;
+const textFor = doc => FILES[Object.keys(FILES).find(k => k.endsWith(`/docs/spec/${doc.vendored}`)) ?? ""] ?? null;
 const source = Object.values(SOURCES)[0] ?? {repository: "https://github.com/river-forecast-system/rfs-specification-documents", commit: "", commitSubject: "", commitDate: ""};
 
 /** Markdown links between the documents become links between these pages. */

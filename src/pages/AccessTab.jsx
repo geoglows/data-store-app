@@ -16,7 +16,7 @@ export function AccessTab({dataset: d}) {
   const also = archived ? null : `${S3_V3_ROOT}/${d.alsoPath}`;
   const example = path.replace("YYYYMMDD00.zarr", "2025010100.zarr")
     .replace("year=YYYY/month=MM/day=DD", "year=2026/month=07/day=10")
-    .replace("lon=XXX/lat=YYY", "lon=-062/lat=-04");
+    .replace("lat=YYY/lon=XXX", "lat=36/lon=-104");
   const dir = example.endsWith("/");
   const local = `./${d.id}/`;
   const s5 = dir

@@ -9,7 +9,13 @@ if (base) {
 }
 
 export const V3_BASE = getConfig().v3Base;
-export const S3_V3_ROOT = (import.meta.env.VITE_S3_V3_ROOT || "s3://river-forecast-system/v3").replace(/\/+$/, "");
+export const S3_V3_ROOT = (import.meta.env.VITE_S3_V3_ROOT || "s3://river-forecast-system-v3").replace(/\/+$/, "");
+
+// Where the browser reads the Zarr stores from, when that is not V3_BASE. The v3 bucket has the
+// hydrography and flood maps but not yet the retrospective or forecast stores, which are read from
+// the sample tree meanwhile — the same riverIndex axis, so a selection made on the map cuts either.
+// TODO: remove VITE_RFS_V3_ZARR_BASE once the stores are published in the bucket.
+const zarrBase = (import.meta.env.VITE_RFS_V3_ZARR_BASE || "").replace(/\/+$/, "");
 export const MAX_BROWSER_MB = Number(import.meta.env.VITE_MAX_BROWSER_MB) || 500;
 
 /** The same object, addressed as a bucket key instead of an https url. */
@@ -38,6 +44,15 @@ export function storeUrl(dataset, {date} = {}) {
   // TODO: move to urls.fdcZarr() once the package publishes one.
   if (dataset.store === "fdc") return `${V3_BASE}/retrospective/fdc.zarr`;
   return urls.retrospectiveZarr({resolution: dataset.resolution});
+}
+
+/**
+ * The url the browser reads a store at. Everything the page shows — the layout, the commands, the
+ * code — keeps the canonical `storeUrl`; only the bytes come from here.
+ */
+export function storeReadUrl(dataset, opts) {
+  const url = storeUrl(dataset, opts);
+  return zarrBase && url.startsWith(V3_BASE) ? zarrBase + url.slice(V3_BASE.length) : url;
 }
 
 export const streamsPmtiles = () => urls.streamsPmtiles();

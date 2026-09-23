@@ -1,60 +1,50 @@
 /**
- * Accounts, shaped like @geoglows/geoglows-auth's bootstrap so the real one can be dropped in.
+ * Accounts.
  *
- * TODO: this is a stand-in. Pressing Sign in signs you straight in as a demo user and remembers the
- * terms acceptance for the tab. The real wiring is
+ * Signing in is @geoglows/geoglows-auth, the same as every portal app: it owns the Supabase client,
+ * the sign-in modal and the account menu in the top bar. Downloading needs an account; agreeing to
+ * the terms is asked on every download and is not recorded here.
  *
- *   import {bootstrapAuth} from "@geoglows/geoglows-auth/bootstrap";
- *   import "@geoglows/geoglows-auth/core/sign-in.css";
- *   export const auth = bootstrapAuth({supabaseUrl, supabasePublishableKey, portalUrl, onAuthChange});
- *
- * with terms acceptance stored on the user's profile rather than in sessionStorage.
+ * Must be imported before anything renders: bootstrapAuth registers the auth listener and reads the
+ * recovery URL before Supabase consumes it.
  */
+import {bootstrapAuth} from "@geoglows/geoglows-auth/bootstrap";
+import "@geoglows/geoglows-auth/core/sign-in.css";
 
-const TERMS_KEY = "rfs-data-store:terms";
-const USER_KEY = "rfs-data-store:user";
+const env = import.meta.env;
+const configured = !!(env.VITE_SUPABASE_URL && env.VITE_SUPABASE_PUBLISHABLE_KEY);
+if (!configured) console.warn("[auth] VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are not set; sign in is unavailable");
 
-const read = (key) => {
-  try {
-    return sessionStorage.getItem(key);
-  } catch {
-    return null;
-  }
-};
-const write = (key, value) => {
-  try {
-    if (value == null) sessionStorage.removeItem(key);
-    else sessionStorage.setItem(key, value);
-  } catch { /* private mode — holds for this page only */ }
-};
+// The library renders the account menu into this element; the top bar places it once it mounts.
+export const authSlot = document.createElement("div");
+authSlot.id = "auth-action";
 
-let state = {
-  user: read(USER_KEY) ? JSON.parse(read(USER_KEY)) : null,
-  termsAccepted: read(TERMS_KEY) === "yes"
-};
+// Statuses in which the session is still being worked out, and who is signed in is not yet known.
+const SETTLING = new Set(["bootstrapping", "processing_callback", "authenticated", "loading_profile", "loading_account"]);
+
+let state = {user: null, ready: !configured};
 const listeners = new Set();
-const emit = () => listeners.forEach(fn => fn(state));
+
+const handle = configured ? bootstrapAuth({
+  supabaseUrl: env.VITE_SUPABASE_URL,
+  supabasePublishableKey: env.VITE_SUPABASE_PUBLISHABLE_KEY,
+  portalUrl: env.VITE_PORTAL_URL,
+  slot: authSlot,
+  connect: {attempts: 2, timeoutMs: 10_000, giveUpMs: 60_000, recheckAfterMs: 300_000},
+  onAuthChange: (s) => {
+    state = {user: s.user ?? null, ready: !SETTLING.has(s.status)};
+    listeners.forEach(fn => fn(state));
+  }
+}) : null;
 
 export const auth = {
   getState: () => state,
-  async signIn() {
-    const user = {sub: "demo-user", email: "demo@geoglows.org", name: "Demo User"};
-    write(USER_KEY, JSON.stringify(user));
-    state = {...state, user};
-    emit();
-    return user;
+  configured,
+  signIn() {
+    handle?.openSignIn();
   },
-  async signOut() {
-    write(USER_KEY, null);
-    write(TERMS_KEY, null);
-    state = {user: null, termsAccepted: false};
-    emit();
-  },
-  async acceptTerms() {
-    if (!state.user) await auth.signIn();
-    write(TERMS_KEY, "yes");
-    state = {...state, termsAccepted: true};
-    emit();
+  signOut() {
+    return handle?.signOut();
   }
 };
 

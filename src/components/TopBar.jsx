@@ -1,6 +1,5 @@
 import {useLocation} from "preact-iso";
-import {auth} from "../account/auth.js";
-import {useAuth} from "../account/useAuth.js";
+import {authSlot} from "../account/auth.js";
 import {toggleTheme, useTheme} from "../ui/theme.js";
 import {BASE_PATH, routes} from "../routes.js";
 import {Icon} from "./Icon.jsx";
@@ -20,7 +19,6 @@ const sectionOf = (url) => {
 export function TopBar() {
   const {url} = useLocation();
   const theme = useTheme();
-  const {user} = useAuth();
   const here = sectionOf(url);
   const env = import.meta.env;
   return (
@@ -36,14 +34,7 @@ export function TopBar() {
         <button id="btn-theme" class="btn icon" aria-label="Toggle light and dark theme" onClick={toggleTheme}>
           <Icon name={theme === "dark" ? "sun" : "moon"}/>
         </button>
-        <div id="auth-action" class="row">
-          {user
-            ? <>
-              <span class="who"><Icon name="user"/><span>{user.name}</span></span>
-              <button class="btn icon" id="btn-sign-out" aria-label="Sign out" onClick={() => auth.signOut()}><Icon name="signOut"/></button>
-            </>
-            : <button class="btn primary" id="btn-sign-in" onClick={() => auth.signIn()}><Icon name="signIn"/><span>Sign in</span></button>}
-        </div>
+        <div class="auth-host" ref={el => el && authSlot.parentNode !== el && el.appendChild(authSlot)}/>
       </nav>
     </header>
   );

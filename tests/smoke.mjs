@@ -42,6 +42,11 @@ async function pickOnMap(route, {center = [-61.5, -3.0], zoom = 6, mode = null} 
   return "0";
 }
 
+async function agree() {
+  await page.check('input[name="agree-usage"]');
+  await page.check('input[name="ack-license"]');
+}
+
 async function download(label) {
   const wait = page.waitForEvent("download", {timeout: 180_000});
   await page.click("#btn-download");
@@ -83,12 +88,12 @@ console.log("js example:", (await page.locator('[data-cli="javascript"]').isVisi
 await page.fill('input[name="start"]', "2020-12-01");
 await page.fill('input[name="end"]', "2020-12-31");
 await page.dispatchEvent('input[name="end"]', "input");
-await page.click("#btn-sign-in");
-await page.click("#terms-accept");
-await page.waitForTimeout(200);
+// The boxes are enabled only for a signed-in account, and clear after every download.
+await agree();
 await download("retrospective");
 
 console.log("streams · rivers:", await pickOnMap("datasets/v3/streams/download"));
+await agree();
 await download("hydrography");
 
 await page.goto(`${BASE}datasets/v3/forecast-flood-maps/access`, {waitUntil: "networkidle"});

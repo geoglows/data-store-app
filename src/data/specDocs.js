@@ -7,7 +7,7 @@
  */
 /**
  * `file` is the path in the specification repository, which the page cites; `vendored` is where
- * scripts/sync-spec.sh puts it under ./spec, which is what the build reads.
+ * scripts/sync-spec.sh puts it under ./docs/spec, which is what the build reads.
  */
 export const SPEC_DOCS = [
   {id: "overview", title: "Overview", file: "docs/index.md", vendored: "index.md", summary: "The model versions and what each one covers."},
