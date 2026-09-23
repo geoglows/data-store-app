@@ -1,0 +1,368 @@
+/* ── Components · buttons, fields, cards, chips, code ─────────────────────── */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: var(--fs-base);
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: .12s;
+}
+
+.btn svg {
+    width: var(--icon);
+    height: var(--icon);
+}
+
+.btn.icon {
+    width: var(--size);
+    height: var(--size);
+    padding: 0;
+    color: var(--text-dim);
+}
+
+.btn.mini {
+    --icon: 14px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: var(--text-faint);
+    background: transparent;
+    border-color: transparent;
+}
+
+.btn.sm-text {
+    --icon: 16px;
+    align-self: flex-start;
+    padding: 5px 10px;
+    font-size: var(--fs-md);
+    color: var(--text-dim);
+}
+
+.btn.primary {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn:hover:not(:disabled) {
+    color: var(--accent);
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+.btn.primary:hover:not(:disabled) {
+    color: var(--on-accent);
+    filter: brightness(1.08);
+}
+
+.btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* Segmented control: the version switch, the selection methods, the command tabs. */
+.seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+}
+
+.seg .seg-btn {
+    padding: 6px 12px;
+    font-size: var(--fs-md);
+    color: var(--text-dim);
+    background: transparent;
+    border-color: transparent;
+}
+
+.seg .seg-btn.on {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.chip-btn {
+    padding: 4px 10px;
+    font-size: var(--fs-sm);
+    border-radius: 999px;
+}
+
+/* Copy buttons swap to a check for a moment after copying. */
+.copy svg:last-child, .btn.done svg:first-child {
+    display: none;
+}
+
+.btn.done svg:last-child {
+    display: block;
+    color: var(--check);
+}
+
+/* ── Fields ── */
+input:not([type="checkbox"], [type="radio"]), select {
+    width: 100%;
+    padding: 7px 9px;
+    font: inherit;
+    font-size: var(--fs-base);
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] input, :root[data-theme="light"] select {
+    color-scheme: light;
+}
+
+input:hover:not(:disabled), select:hover:not(:disabled), input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+}
+
+.checkline, .radio-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+.checkline .count {
+    margin-left: auto;
+    font-size: var(--fs-sm);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+}
+
+fieldset {
+    border: 0;
+}
+
+legend {
+    margin-bottom: 6px;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+/* ── Cards, chips, badges ── */
+.card {
+    display: flex;
+    gap: 14px;
+    padding: 18px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+    transition: border-color .12s, transform .12s;
+}
+
+a.card:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+.card p {
+    color: var(--text-dim);
+    font-size: var(--fs-base);
+}
+
+.thumb {
+    --icon: 26px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--r-lg);
+    color: #fff;
+}
+
+.thumb svg {
+    width: var(--icon);
+    height: var(--icon);
+}
+
+.thumb.lg {
+    --icon: 34px;
+    width: 72px;
+    height: 72px;
+}
+
+.thumb.hydrography {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.thumb.retrospective {
+    background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+}
+
+.thumb.forecasts {
+    background: linear-gradient(135deg, #b45309, #f59e0b);
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip, .badge {
+    --icon: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    font-size: var(--fs-sm);
+    color: var(--text-dim);
+    background: var(--surface2);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+}
+
+.chip svg {
+    width: var(--icon);
+    height: var(--icon);
+}
+
+.chip.strong {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: transparent;
+}
+
+.chip.muted {
+    color: var(--text-faint);
+}
+
+.badge {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: var(--fs-2xs);
+}
+
+.badge.accent {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.badge.warn {
+    color: var(--warn-text);
+    border-color: var(--warn);
+    background: transparent;
+}
+
+.notice {
+    --icon: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 18px;
+    padding: 10px 14px;
+    color: var(--warn-text);
+    border: 1px solid var(--warn);
+    border-radius: var(--r-lg);
+}
+
+.notice svg {
+    width: var(--icon);
+    height: var(--icon);
+}
+
+/* ── Code ── */
+.code {
+    position: relative;
+    margin: 8px 0 14px;
+}
+
+.code pre {
+    padding: 14px 52px 14px 14px;
+    overflow-x: auto;
+    color: var(--text);
+    background: var(--surface2);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+    line-height: 1.55;
+}
+
+.code .copy {
+    --size: 32px;
+    --icon: 18px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--surface);
+}
+
+/* ── Tables ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-base);
+}
+
+table.facts th, table.facts td, table.data th, table.data td {
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+table.facts th {
+    width: 34%;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+table.data thead th {
+    font-size: var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-faint);
+}
+
+.links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.links a {
+    --icon: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+a svg {
+    width: 14px;
+    height: 14px;
+    vertical-align: -2px;
+}

@@ -1,0 +1,85 @@
+@font-face {
+    font-family: "Open Sans";
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/opensans.woff2") format("woff2");
+}
+
+:root, :root[data-theme="dark"] {
+    /* Ground and surfaces */
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1e293b;
+    --border: #334155;
+    --border-soft: rgba(51, 65, 85, .6);
+    --rule: #e2e8f0;
+    --check: #22c55e;
+    --text: #f8fafc;
+    --text-dim: #dde5ee;
+    --text-faint: #b6c2d3;
+    --accent: #38bdf8;
+    --accent-dim: #0ea5e9;
+    --on-accent: #04121b;
+
+    /* Status */
+    --success: #10b981;
+    --danger: #ef4444;
+    --danger-text: #fca5a5;
+    --warn: #f59e0b;
+    --warn-text: #fcd34d;
+
+    /* Chrome incidentals */
+    --page-w: 1320px;
+    --shadow-color: 0, 0, 0;
+
+    /* Type scale */
+    --fs-2xs: 10px;
+    --fs-sm: 12px;
+    --fs-md: 13px;
+    --fs-base: 14px;
+    --fs-lg: 15px;
+    --fs-xl: 21px;
+
+    /* Radius scale */
+    --r-sm: 4px;
+    --r-md: 6px;
+    --r-lg: 8px;
+
+    /* Space, control sizing, layout */
+    --gap: 8px;
+    --size: 36px;
+    --icon: 20px;
+
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --sans: "Open Sans", "Segoe UI", system-ui, sans-serif;
+    font-family: var(--sans), sans-serif;
+}
+
+/* Light theme — set by the header's sun/moon button. */
+:root[data-theme="light"] {
+    --bg: #eef2f7;
+    --surface: #ffffff;
+    --surface2: #f1f5f9;
+    --border: #cbd5e1;
+    --border-soft: rgba(148, 163, 184, .55);
+    --rule: #000000;
+    --check: #15803d;
+
+    /* Black for both of the top two ranks: on a light ground a "dimmed" grey is lower contrast, not
+       hierarchy. The third stays grey — it carries counts and units, where the drop is real. */
+    --text: #000000;
+    --text-dim: #000000;
+    --text-faint: #64748b;
+
+    --accent: #0284c7;
+    --accent-dim: #0369a1;
+    --on-accent: #ffffff;
+
+    --success: #059669;
+    --danger: #dc2626;
+    --danger-text: #b91c1c;
+    --warn: #f59e0b;
+    --warn-text: #b45309;
+    --shadow-color: 100, 116, 139;
+}

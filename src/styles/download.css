@@ -1,0 +1,300 @@
+/* ── The download form ─────────────────────────────────────────────────── */
+.download {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+}
+
+.tab-panel > .form-card + .form-card {
+    margin-top: 16px;
+}
+
+.form-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-card .num {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    font-size: var(--fs-sm);
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+.form-card.needs {
+    border-color: var(--warn);
+}
+
+/* ── Area of interest ── */
+.aoi {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 12px;
+}
+
+.aoi-map {
+    position: relative;
+    height: 480px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+}
+
+.aoi-side {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    max-height: 480px;
+}
+
+.aoi-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    background: var(--surface2);
+    border-radius: var(--r-md);
+}
+
+.stat .k {
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-faint);
+}
+
+.stat .v {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.aoi-items {
+    flex: 1 1 auto;
+    list-style: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+}
+
+.aoi-items li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.linkish {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 6px;
+    font: inherit;
+    font-size: var(--fs-md);
+    color: var(--text);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+}
+
+.linkish:hover {
+    background: var(--surface2);
+}
+
+.linkish code {
+    background: transparent;
+    padding: 0;
+}
+
+.linkish .muted {
+    margin-left: auto;
+    font-size: var(--fs-sm);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #F5A623;
+}
+
+.dot.outlet, .dot.reach {
+    background: #B45309;
+}
+
+.dot.inlet {
+    background: #ef4444;
+}
+
+/* ── Options ── */
+.fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    font-size: var(--fs-md);
+    color: var(--text-dim);
+}
+
+.field .value {
+    padding: 7px 0;
+    font-size: var(--fs-base);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.quick {
+    gap: 6px;
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+}
+
+.choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    cursor: pointer;
+}
+
+.choice:has(input:checked) {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.choice input {
+    margin-top: 3px;
+}
+
+.choice span span {
+    font-size: var(--fs-md);
+    color: var(--text-dim);
+}
+
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+/* ── Terms, request ── */
+.terms {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--text-dim);
+}
+
+.accepted {
+    --icon: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--check);
+}
+
+.accepted svg {
+    width: var(--icon);
+    height: var(--icon);
+}
+
+table.request tr.bad td {
+    color: var(--danger-text);
+    font-weight: 600;
+}
+
+.submit-row {
+    gap: 12px;
+}
+
+.progress {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width .2s;
+}
+
+.error-line {
+    color: var(--danger-text);
+    font-weight: 600;
+}
+
+.cli-tabs {
+    align-self: flex-start;
+}
+
+.cli-tabs + .code {
+    margin: 0;
+}
+
+/* MapLibre's controls, in the app's surfaces. */
+.maplibregl-ctrl-group {
+    background: var(--surface) !important;
+    border: 1px solid var(--border);
+}
+
+.maplibregl-ctrl-group button + button {
+    border-top-color: var(--border) !important;
+}
+
+:root[data-theme="dark"] .maplibregl-ctrl-icon {
+    filter: invert(1);
+}
+
+@media (max-width: 800px) {
+    .aoi {
+        grid-template-columns: 1fr;
+    }
+
+    .aoi-map {
+        height: 380px;
+    }
+}

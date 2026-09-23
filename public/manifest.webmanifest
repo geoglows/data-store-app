@@ -1,0 +1,14 @@
+{
+  "name": "RFS Data Store",
+  "short_name": "RFS Data",
+  "description": "Browse, subset and download GEOGLOWS River Forecast System datasets",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d1520",
+  "theme_color": "#0d1520",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

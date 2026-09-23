@@ -1,0 +1,128 @@
+/* ── Reset · page frame · type ──────────────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.hidden, [hidden] {
+    display: none !important;
+}
+
+/* Unlike the map apps, this is a document: the page scrolls, the top bar stays. */
+html {
+    scroll-padding-top: 120px;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--text);
+    font-size: var(--fs-base);
+    line-height: 1.5;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+code, pre, .mono {
+    font-family: var(--mono);
+    font-size: .92em;
+}
+
+p code, td code, li code, span code {
+    padding: 1px 5px;
+    border-radius: var(--r-sm);
+    background: var(--surface2);
+}
+
+svg {
+    flex: 0 0 auto;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.between {
+    justify-content: space-between;
+}
+
+.grow {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* ── Type · the reference app's scale: one accent title, uppercase eyebrows under it ── */
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.015em;
+    color: var(--text);
+}
+
+h2, h4, .eyebrow {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+h3 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    letter-spacing: -.015em;
+    color: var(--accent);
+}
+
+.lede {
+    font-size: var(--fs-lg);
+    color: var(--text-dim);
+    max-width: 75ch;
+}
+
+.small {
+    font-size: var(--fs-md);
+}
+
+.muted {
+    color: var(--text-faint);
+}
+
+.break {
+    overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
+    }
+}
